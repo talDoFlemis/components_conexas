@@ -14,6 +14,7 @@ class Graph:
             elif idx >= 4:
                 edges.append([int(x) for x in line.split()])
         self.adj = [[0 for _ in range(n)] for _ in range(n)]
+        self.n = n
         for edge in edges:
             self.adj[edge[0] - 1][edge[1] - 1] = 1
             self.adj[edge[1] - 1][edge[0] - 1] = 1
@@ -22,10 +23,10 @@ class Graph:
         return [idx for idx, x in enumerate(self.adj[v]) if x != 0]
 
     def componentes(self):
-        vis = [False for _ in range(self.adj.__len__())]
-        conn = [[] for _ in range(self.adj.__len__())]
+        vis = [False for _ in range(self.n)]
+        conn = [[] for _ in range(self.n)]
 
-        for i in range(self.adj.__len__()):
+        for i in range(self.n):
             if not vis[i]:
                 q = Queue()
                 q.put(i)
