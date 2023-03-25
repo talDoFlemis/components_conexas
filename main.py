@@ -24,7 +24,7 @@ class Graph:
     def neighbors(self, v):
         return [idx for idx, x in enumerate(self.adj[v]) if x != 0]
 
-    def componentes(self):
+    def output(self):
         vis = [False for _ in range(self.n)]
         conn = [[] for _ in range(self.n)]
 
@@ -41,13 +41,16 @@ class Graph:
                             vis[n] = True
                             q.append(n)
 
-        return conn
+        for i in conn:
+            if i.__len__() != 0:
+                i.sort()
+                print(" ".join([str(x + 1) for x in i]))
 
-    def output(self):
-        for conn in self.componentes():
-            if conn.__len__() != 0:
-                conn.sort()
-                print(" ".join([str(x + 1) for x in conn]))
+    # def output(self):
+    #     for conn in self.componentes():
+    #         if conn.__len__() != 0:
+    #             conn.sort()
+    #             print(" ".join([str(x + 1) for x in conn]))
 
 
 def main():
@@ -56,6 +59,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    time = timeit.timeit(main)
-    print(time)
+    main()
+    # time = timeit.timeit(main)
+    # print(time)
