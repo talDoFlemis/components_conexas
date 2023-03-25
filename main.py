@@ -1,5 +1,7 @@
 #!/bin/env python3
 import sys
+import bisect
+from queue import Queue
 
 
 class Graph:
@@ -18,16 +20,35 @@ class Graph:
         self.edges = edges
 
     def neighbors(self, v):
-        return [x for x in self.adj[v] if x != 0]
+        return [idx for idx, x in enumerate(self.adj[v]) if x != 0]
 
-    def usguri(self):
+    def componentes(self):
+        vis = [False for _ in range(self.adj.__len__())]
+        conn = [[] for _ in range(self.adj.__len__())]
+
         for i in range(self.adj.__len__()):
-            print(self.adj[i])
+            if not vis[i]:
+                q = Queue()
+                q.put(i)
+                while not q.empty():
+                    el = q.get()
+                    vis[el] = True
+                    bisect.insort(conn[i], el)
+
+                    [q.put(n) for n in self.neighbors(el) if not vis[n]]
+
+        return conn
+
+    def output(self):
+        for conn in self.componentes():
+            if conn.__len__() != 0:
+                [print(i + 1, end=" ") for i in conn]
+                print()
 
 
 def main():
     graph = Graph()
-    graph.usguri()
+    graph.output()
 
 
 if __name__ == "__main__":
