@@ -17,7 +17,6 @@ class Graph:
         for edge in edges:
             self.adj[edge[0] - 1][edge[1] - 1] = 1
             self.adj[edge[1] - 1][edge[0] - 1] = 1
-        self.edges = edges
 
     def neighbors(self, v):
         return [idx for idx, x in enumerate(self.adj[v]) if x != 0]
@@ -30,20 +29,22 @@ class Graph:
             if not vis[i]:
                 q = Queue()
                 q.put(i)
+                vis[i] = True
                 while not q.empty():
                     el = q.get()
-                    vis[el] = True
                     bisect.insort(conn[i], el)
 
-                    [q.put(n) for n in self.neighbors(el) if not vis[n]]
+                    for n in self.neighbors(el):
+                        if not vis[n]:
+                            vis[n] = True
+                            q.put(n)
 
         return conn
 
     def output(self):
         for conn in self.componentes():
             if conn.__len__() != 0:
-                [print(i + 1, end=" ") for i in conn]
-                print()
+                print(" ".join([str(x + 1) for x in conn]))
 
 
 def main():
