@@ -1,23 +1,25 @@
 #!/bin/env python3
 import sys
-import bisect
-from queue import Queue
+import timeit
+from collections import deque
+
+
+def should_be_fast_as_fk():
+    print("Hello World!")
 
 
 class Graph:
     def __init__(self):
         n = 0
-        edges = []
         for idx, line in enumerate(sys.stdin):
             if idx == 2:
                 n = int(line.split("=")[1])
+            if idx == 3:
+                self.adj = [[0 for _ in range(n)] for _ in range(n)]
             elif idx >= 4:
-                edges.append([int(x) for x in line.split()])
-        self.adj = [[0 for _ in range(n)] for _ in range(n)]
+                (a, b) = [int(x) for x in line.split()]
+                self.adj[a - 1][b - 1] = self.adj[b - 1][a - 1] = 1
         self.n = n
-        for edge in edges:
-            self.adj[edge[0] - 1][edge[1] - 1] = 1
-            self.adj[edge[1] - 1][edge[0] - 1] = 1
 
     def neighbors(self, v):
         return [idx for idx, x in enumerate(self.adj[v]) if x != 0]
@@ -28,23 +30,23 @@ class Graph:
 
         for i in range(self.n):
             if not vis[i]:
-                q = Queue()
-                q.put(i)
+                q = deque()
+                q.append(i)
                 vis[i] = True
-                while not q.empty():
-                    el = q.get()
-                    bisect.insort(conn[i], el)
-
+                while len(q) != 0:
+                    el = q.popleft()
+                    conn[i].append(el)
                     for n in self.neighbors(el):
                         if not vis[n]:
                             vis[n] = True
-                            q.put(n)
+                            q.append(n)
 
         return conn
 
     def output(self):
         for conn in self.componentes():
             if conn.__len__() != 0:
+                conn.sort()
                 print(" ".join([str(x + 1) for x in conn]))
 
 
@@ -54,4 +56,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    time = timeit.timeit(main)
+    print(time)
