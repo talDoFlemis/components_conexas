@@ -4,6 +4,10 @@ import timeit
 from collections import deque
 
 
+def merge(a, b):
+    a.extend(x for x in b if x not in a)
+
+
 def find(parents, a):
     root = a
 
@@ -16,23 +20,21 @@ def find(parents, a):
 def union(parents, rank, a, b):
     pa, pb = find(parents, a), find(parents, b)
 
-    if rank[pa] > rank[pb]:
+    if rank[pa] >= rank[pb]:
         parents[pb] = pa
         rank[pa] += rank[pb]
-    elif rank[pb] > rank[pa]:
+    else:
         parents[pa] = pb
         rank[pb] += rank[pa]
-    else:
-        parents[pb] = pa
-        rank[pa] += rank[pb]
 
 
-def should_be_fast_as_fk():
+def should_be_fast():
     parents = []
     rank = []
     path = []
     n = 0
     for idx, line in enumerate(sys.stdin):
+    # for idx, line in enumerate(open("./exemplos/instancias/0.in", "r")):
         if idx == 2:
             n = int(line.split("=")[1])
         if idx == 3:
@@ -43,19 +45,67 @@ def should_be_fast_as_fk():
             a, b = [int(x) for x in line.split()]
             union(parents, rank, a - 1, b - 1)
 
-    for idx, p in enumerate(parents):
-        if p == idx:
-            path[p].append(idx + 1)
+    for idx, el in enumerate(parents):
+        if el == idx:
+            path[idx].append(idx + 1)
             for i in range(n):
-                if parents[i] == p and i != p:
-                    path[p].append(i + 1)
+                if find(parents, i) == idx and i != idx:
+                    path[idx].append(i + 1)
+            path[idx].sort()
+
+    path.sort()
 
     for p in path:
         if p.__len__() != 0:
-            # sys.stdout.write(" ".join([str(x) for x in p]))
-            # sys.stdout.write("\n")
-            # sys.stdout.flush()
             print(" ".join([str(x) for x in p]))
+
+
+def find2(parents, a):
+    root = a
+
+    while parents[root][0] != root:
+        parents[root][0] = parents[parents[root][0]][0]
+        root = parents[root][0]
+    return root
+
+
+def union2(parents, rank, a, b):
+    pa, pb = find2(parents, a), find2(parents, b)
+
+    if rank[pa] >= rank[pb]:
+        merge(parents[pa], parents[pb])
+        parents[pb][0] = pa
+        rank[pa] += rank[pb]
+    else:
+        merge(parents[pb], parents[pa])
+        parents[pa][0] = pb
+        rank[pb] += rank[pa]
+
+
+def should_be_fast_2():
+    parents = []
+    rank = []
+    n = 0
+    for idx, line in enumerate(sys.stdin):
+        if idx == 2:
+            n = int(line.split("=")[1])
+        if idx == 3:
+            parents = [[i] for i in range(n)]
+            rank = [1] * n
+        elif idx >= 4:
+            a, b = [int(x) for x in line.split()]
+            union2(parents, rank, a - 1, b - 1)
+
+    path = []
+
+    for idx, el in enumerate(parents):
+        if el[0] == idx:
+            el.sort()
+            path.append(el)
+
+    path.sort()
+
+    [print(" ".join([str(x + 1) for x in el])) for el in path]
 
 
 class Graph:
@@ -139,12 +189,13 @@ class Graph2:
 def main():
     # g = Graph2()
     # g.output()
-    should_be_fast_as_fk()
+    should_be_fast()
+    # should_be_fast_2()
     # graph = Graph()
     # graph.output()
 
 
 if __name__ == "__main__":
-    # main()
-    time = timeit.timeit(main)
-    print(time)
+    main()
+    # time = timeit.timeit(main)
+    # print(time)
