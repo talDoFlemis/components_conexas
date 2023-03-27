@@ -86,6 +86,7 @@ def should_be_fast_2():
     parents = []
     rank = []
     n = 0
+    # for idx, line in enumerate(open("./exemplos/instancias/1.in", "r")):
     for idx, line in enumerate(sys.stdin):
         if idx == 2:
             n = int(line.split("=")[1])
@@ -96,16 +97,14 @@ def should_be_fast_2():
             a, b = [int(x) for x in line.split()]
             union2(parents, rank, a - 1, b - 1)
 
-    path = []
+    vis = [False for _ in range(n)]
 
-    for idx, el in enumerate(parents):
-        if el[0] == idx:
-            el.sort()
-            path.append(el)
-
-    path.sort()
-
-    [print(" ".join([str(x + 1) for x in el])) for el in path]
+    for idx in range(n):
+        pa = find2(parents, idx)
+        if not vis[pa]:
+            vis[pa] = True
+            newlist = sorted(parents[pa])
+            print(" ".join([str(x + 1) for x in newlist]))
 
 
 class Graph:
@@ -185,15 +184,15 @@ class Graph2:
 
 
 def main():
-    g = Graph2()
-    g.output()
+    # g = Graph2()
+    # g.output()
     # should_be_fast()
-    # should_be_fast_2()
+    should_be_fast_2()
     # graph = Graph()
     # graph.output()
 
 
 if __name__ == "__main__":
-    # main()
-    time = timeit.timeit(main)
-    print(time)
+    main()
+    # time = timeit.timeit(main)
+    # print(time)
