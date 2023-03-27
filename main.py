@@ -34,7 +34,7 @@ def should_be_fast():
     path = []
     n = 0
     for idx, line in enumerate(sys.stdin):
-    # for idx, line in enumerate(open("./exemplos/instancias/0.in", "r")):
+        # for idx, line in enumerate(open("./exemplos/instancias/0.in", "r")):
         if idx == 2:
             n = int(line.split("=")[1])
         if idx == 3:
@@ -172,10 +172,8 @@ class Graph2:
         return temp
 
     def output(self):
-        vis = []
+        vis = [False for _ in range(self.n)]
         conn = []
-        for _ in range(self.n):
-            vis.append(False)
         for v in range(self.n):
             if not vis[v]:
                 temp = []
@@ -187,15 +185,15 @@ class Graph2:
 
 
 def main():
-    # g = Graph2()
-    # g.output()
-    should_be_fast()
+    g = Graph2()
+    g.output()
+    # should_be_fast()
     # should_be_fast_2()
     # graph = Graph()
     # graph.output()
 
 
 if __name__ == "__main__":
-    main()
-    # time = timeit.timeit(main)
-    # print(time)
+    # main()
+    time = timeit.timeit(main)
+    print(time)
